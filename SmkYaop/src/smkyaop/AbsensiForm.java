@@ -1,0 +1,524 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package smkyaop;
+import database.Database;
+import helper.Helper;
+import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ *
+ * @author Bunga Permatasari
+ */
+public class AbsensiForm extends javax.swing.JFrame {
+
+    /**
+     * Creates new form JabatanForm
+     */
+    public AbsensiForm() {
+        initComponents();
+        loadData("");
+        active(true);                
+    }
+    
+    private void loadData(String keys){
+      Object[] Baris ={"ID Pegawai","ID Jabatan","NIP", "Nama Pegawai", "Jenis kelamin","Tempat,Tanggal Lahir","Alamat","Telp","Status","Wali Kelas"};
+      DefaultTableModel tabmode = new DefaultTableModel (null, Baris);
+      table.setModel(tabmode);
+      table.setRowHeight(40);
+      String cari = "";
+      String sql = "";
+      if(keys != ""){
+          cari = " WHERE nip LIKE '%"+keys+"%' OR namapegawai LIKE '%"+keys+"%' ";
+      }
+        sql = "SELECT * FROM pegawai";
+          DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer();
+          renderer.setHorizontalAlignment(0);          
+                  table.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+          table.getColumnModel().getColumn(0).setPreferredWidth(10);
+          table.getColumnModel().getColumn(1).setPreferredWidth(10);
+          table.getColumnModel().getColumn(2).setPreferredWidth(10);          
+          table.getColumnModel().getColumn(4).setPreferredWidth(10);
+          table.getColumnModel().getColumn(9).setPreferredWidth(10);
+          table.getColumnModel().getColumn(8).setPreferredWidth(15);
+          table.getColumnModel().getColumn(7).setPreferredWidth(15);          
+          DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
+          cellRenderer.setHorizontalAlignment(JLabel.CENTER);
+          table.getColumnModel().getColumn(0).setCellRenderer(cellRenderer); 
+          table.getColumnModel().getColumn(1).setCellRenderer(cellRenderer);  
+          table.getColumnModel().getColumn(2).setCellRenderer(cellRenderer); 
+          table.getColumnModel().getColumn(4).setCellRenderer(cellRenderer); 
+          table.getColumnModel().getColumn(6).setCellRenderer(cellRenderer);  
+          table.getColumnModel().getColumn(7).setCellRenderer(cellRenderer);  
+          table.getColumnModel().getColumn(8).setCellRenderer(cellRenderer);  
+          table.getColumnModel().getColumn(9).setCellRenderer(cellRenderer);          
+      
+      try {
+          java.sql.Connection conn = database.Database.getConn();
+          java.sql.Statement stat = conn.createStatement();
+          ResultSet hasil = stat.executeQuery(sql+cari);
+          int index = 0;
+          while(hasil.next()){
+//      Object[] Baris ={"ID Pegawai","ID Jabatan","NIP", "Nama Pegawai", "Jenis kelamin","Tempat,Tanggal Lahir","Alamat","Telp","Status","Wali Kelas"};
+              SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", new Locale("id","ID"));
+                java.util.Date date = new java.util.Date(hasil.getDate(7).getTime());
+                String tgl = sdf.format(date);
+              String a = hasil.getString(1);
+              String b = hasil.getString(2);
+              String c = hasil.getString(3);
+              String d = hasil.getString(4);
+              String e = hasil.getString(5);
+              String f = hasil.getString(6)+","+tgl;
+              String g = hasil.getString(8);
+              String h = hasil.getString(9);
+              String i = hasil.getString(10);
+              boolean j = hasil.getBoolean(11);
+              Object[] data={a,b,c,d,e,f,g,h,i,j};
+              tabmode.addRow(data);
+          }
+      }catch(SQLException e){   
+          e.printStackTrace();
+      }
+    }
+    
+    private void clear(){
+        tfId.setText("");
+        tfCari.setText("Search By Name ");
+    }
+    
+    private void firetable(){
+        DefaultTableModel dtm = (DefaultTableModel)table.getModel();
+        dtm.fireTableDataChanged();
+    }
+    
+    private void active(boolean b){
+        btnSave.setEnabled(b);
+    }
+    
+    private String[] getFromTable(int row){
+        return new  String[]{table.getValueAt(row, 0).toString(),table.getValueAt(row, 1).toString()
+        ,table.getValueAt(row, 2).toString(),table.getValueAt(row, 3).toString()};
+    }
+    
+    private int getRow(){return table.getSelectedRow();}
+    
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        tfId = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        table = new javax.swing.JTable();
+        btnSave = new javax.swing.JButton();
+        btnCancel = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
+        tfCari = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        btnSave1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        tanggal1 = new helper.Tanggal();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Form Absen");
+
+        jPanel1.setBackground(new java.awt.Color(25, 59, 104));
+
+        jPanel2.setBackground(new java.awt.Color(20, 165, 255));
+
+        jLabel1.setFont(new java.awt.Font("Agency FB", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(25, 59, 104));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Absen Pegawai");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+        );
+
+        jPanel3.setBackground(new java.awt.Color(20, 165, 255));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(25, 59, 104));
+        jLabel2.setText("ID Pegawai");
+
+        tfId.setFont(new java.awt.Font("Tahoma", 0, 19)); // NOI18N
+        tfId.setEnabled(false);
+
+        table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        table.getTableHeader().setReorderingAllowed(false);
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(table);
+
+        btnSave.setBackground(new java.awt.Color(255, 255, 255));
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
+        btnSave.setText("Masuk");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
+        btnCancel.setBackground(new java.awt.Color(255, 255, 255));
+        btnCancel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/cancel.png"))); // NOI18N
+        btnCancel.setText("BATAL");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
+        btnBack.setBackground(new java.awt.Color(255, 255, 255));
+        btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/kembali.png"))); // NOI18N
+        btnBack.setText("KEMBALI");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
+        tfCari.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        tfCari.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfCariActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
+        jLabel6.setForeground(new java.awt.Color(25, 59, 104));
+        jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/caricari.png"))); // NOI18N
+
+        btnSave1.setBackground(new java.awt.Color(255, 255, 255));
+        btnSave1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
+        btnSave1.setText("Pulang");
+        btnSave1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSave1ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 22)); // NOI18N
+        jLabel3.setText("Masukkan Nama / NIP");
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1)
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(99, 99, 99)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2)
+                    .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(btnSave1, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 158, Short.MAX_VALUE)
+                .addComponent(btnCancel)
+                .addGap(59, 59, 59)
+                .addComponent(btnBack)
+                .addGap(79, 79, 79))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tanggal1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(tfCari, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3)
+                        .addComponent(tanggal1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(174, 174, 174)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(tfId, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(67, 67, 67)
+                                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSave1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(260, 260, 260))))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+        String id = tfId.getText();
+        
+        java.util.Date now = new java.util.Date();
+        String query = "SELECT * FROM pegawai INNER JOIN absensi ON pegawai.idpegawai = absensi.idpegawai  AND absensi.tanggal =  ?";
+        try{
+            Connection conn = Database.getConn();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setDate(1, new java.sql.Date ( now.getTime() ) );
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                if(rs.getInt(1) == Integer.parseInt(id) ){
+                    Helper.alert("Pegawai dengan ip ini sudah Absen masuk!");
+                    return;
+                }
+            }
+            
+            String query2 = "INSERT INTO absensi(idpegawai,tanggal,jamMasuk,status,keterangan) VALUES (?,?,?,?,?)";
+            PreparedStatement ps2 = conn.prepareStatement(query2);
+            ps2.setInt(1, Integer.parseInt(id));
+            ps2.setDate(2, new java.sql.Date(now.getTime()));
+            ps2.setTime(3,  new java.sql.Time( now.getTime()) );
+            ps2.setInt(4, 1);
+            ps2.setString(5, "Masuk");
+            int rsult = ps2.executeUpdate();
+            if(rsult > 0){
+                Helper.alert("Berhasil Absen Masuk!");
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        loadData("");
+        clear();
+        firetable();
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void tfCariActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfCariActionPerformed
+        // TODO add your handling code here:
+        String keys = tfCari.getText();
+        if(keys.isEmpty()){
+            loadData("");
+            return;
+        }
+        loadData(keys);
+    }//GEN-LAST:event_tfCariActionPerformed
+
+    private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
+        // TODO add your handling code here:
+        int row = getRow();
+        tfId.setText(this.getFromTable(row)[0]);       
+    }//GEN-LAST:event_tableMouseClicked
+
+    private void btnSave1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSave1ActionPerformed
+        // TODO add your handling code here:
+        String id = tfId.getText();
+        java.util.Date now = new java.util.Date();
+        String query = "SELECT * FROM absensi INNER JOIN pegawai ON pegawai.idpegawai = absensi.idpegawai  AND absensi.tanggal =  ?";
+        try{
+            Connection conn = Database.getConn();
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setDate(1, new java.sql.Date(now.getTime()));
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                if(rs.getTime(5) != null){
+                    Helper.alert("Pegawai dengan ip ini sudah Absen Pulang!");
+                    System.out.println(rs.getInt(1));
+                    return;
+                }
+            }
+            
+            String query2 = "UPDATE absensi SET jamPulang = ? WHERE idpegawai = ? AND tanggal = ? ";
+            
+            PreparedStatement ps2 = conn.prepareStatement(query2);
+            ps2.setTime(1, new java.sql.Time(now.getTime()));
+            ps2.setInt(2,Integer.parseInt(id));
+            ps2.setDate(3, new java.sql.Date(now.getTime()));
+            int rsult = ps2.executeUpdate();
+            if(rsult > 0){
+                Helper.alert("Berhasil Absen Pulang!");
+            }
+        }catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        loadData("");
+        clear();
+        firetable();        
+    }//GEN-LAST:event_btnSave1ActionPerformed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        dispose();
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        // TODO add your handling code here:
+        clear();
+        loadData("");
+        firetable();
+        active(true);
+    }//GEN-LAST:event_btnCancelActionPerformed
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(AbsensiForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(AbsensiForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(AbsensiForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(AbsensiForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
+
+        /* Create and display the form */
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new AbsensiForm().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCancel;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnSave1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable table;
+    private helper.Tanggal tanggal1;
+    private javax.swing.JTextField tfCari;
+    private javax.swing.JTextField tfId;
+    // End of variables declaration//GEN-END:variables
+}
